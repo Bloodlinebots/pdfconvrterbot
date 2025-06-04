@@ -2,7 +2,7 @@
 
 import os
 import shutil
-from telegram import Update
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CallbackContext
 from config import FORCE_JOIN_CHANNEL
 
@@ -12,15 +12,15 @@ async def check_user_joined(update: Update, context: CallbackContext) -> bool:
         member = await context.bot.get_chat_member(FORCE_JOIN_CHANNEL, user_id)
         if member.status in ["member", "administrator", "creator"]:
             return True
-    except:
-        pass
+    except Exception as e:
+        print(f"Check join error: {e}")
 
     buttons = [[
-        context.bot.inline_keyboard_button("✅ Subscribed", callback_data="make_pdf")
+        InlineKeyboardButton("✅ Subscribed", callback_data="make_pdf")
     ]]
     await update.callback_query.message.reply_text(
         "🚫 You must join our channel to use this bot.\n\n👉 @image_to_pdf",
-        reply_markup=context.bot.inline_keyboard_markup(buttons)
+        reply_markup=InlineKeyboardMarkup(buttons)
     )
     return False
 
@@ -32,23 +32,22 @@ def clear_user_cache(user_id: int):
     if os.path.exists(pdf):
         os.remove(pdf)
 
-def send_feature_buttons(update: Update, context: CallbackContext):
+async def send_feature_buttons(update: Update, context: CallbackContext):
     buttons = [
         [
-            context.bot.inline_keyboard_button("📄 Make PDF", callback_data="make_pdf"),
-            context.bot.inline_keyboard_button("📝 Set Name", callback_data="set_name")
+            InlineKeyboardButton("📄 Make PDF", callback_data="make_pdf"),
+            InlineKeyboardButton("📝 Set Name", callback_data="set_name")
         ],
         [
-            context.bot.inline_keyboard_button("🧹 Clear", callback_data="clear"),
-            context.bot.inline_keyboard_button("🌒 Dark Mode", callback_data="dark")
+            InlineKeyboardButton("🧹 Clear", callback_data="clear"),
+            InlineKeyboardButton("🌒 Dark Mode", callback_data="dark")
         ],
         [
-            context.bot.inline_keyboard_button("💧 Your Watermark", callback_data="watermark"),
-            context.bot.inline_keyboard_button("📦 Compress", callback_data="compress")
+            InlineKeyboardButton("💧 Your Watermark", callback_data="watermark"),
+            InlineKeyboardButton("📦 Compress", callback_data="compress")
         ]
     ]
-    update.message.reply_text(
+    await update.message.reply_text(
         "If you want to enable extra features, tap below. Otherwise, just tap 'Make PDF'.",
-        reply_markup=context.bot.inline_keyboard_markup(buttons)
+        reply_markup=InlineKeyboardMarkup(buttons)
     )
-  
