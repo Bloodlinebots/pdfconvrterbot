@@ -1,0 +1,25 @@
+{
+  "name": "NotesToPDFBot",
+  "description": "Telegram bot to convert images into PDF with watermark, compression, dark mode, and custom name.",
+  "repository": "https://github.com/yourusername/yourrepo",
+  "keywords": ["telegram", "pdf", "image to pdf", "telegram bot"],
+  "env": {
+    "BOT_TOKEN": {
+      "description": "Your Telegram Bot Token",
+      "required": true
+    },
+    "FORCE_JOIN": {
+      "description": "Force join channel username (without @)",
+      "required": false
+    },
+    "OWNER_ID": {
+      "description": "Your Telegram user ID (admin access)",
+      "required": true
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ]
+}
