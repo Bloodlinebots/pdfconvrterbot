@@ -2,9 +2,10 @@
 
 import os
 import shutil
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update
 from telegram.ext import CallbackContext
 from config import FORCE_JOIN_CHANNEL
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 async def check_user_joined(update: Update, context: CallbackContext) -> bool:
     user_id = update.effective_user.id
@@ -12,14 +13,14 @@ async def check_user_joined(update: Update, context: CallbackContext) -> bool:
         member = await context.bot.get_chat_member(FORCE_JOIN_CHANNEL, user_id)
         if member.status in ["member", "administrator", "creator"]:
             return True
-    except Exception as e:
-        print(f"Check join error: {e}")
+    except:
+        pass
 
     buttons = [[
         InlineKeyboardButton("✅ Subscribed", callback_data="make_pdf")
     ]]
     await update.callback_query.message.reply_text(
-        "🚫 You must join our channel to use this bot.\n\n👉 @image_to_pdf",
+        f"🚫 You must join our channel to use this bot.\n\n👉 {FORCE_JOIN_CHANNEL}",
         reply_markup=InlineKeyboardMarkup(buttons)
     )
     return False
