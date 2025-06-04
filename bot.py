@@ -1,23 +1,24 @@
 import os
+from pathlib import Path
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, MessageHandler,
     CallbackQueryHandler, ContextTypes, filters
 )
 
-from config import BOT_TOKEN, FORCE_JOIN_CHANNEL
+from config import BOT_TOKEN
 from pdf_generator import generate_pdf
 from watermark import set_user_watermark, clear_user_watermark
 from utils.helpers import clear_user_cache, send_feature_buttons, check_user_joined
 from utils.filters import is_image
-
-from pathlib import Path
 
 user_lang = {}
 user_image_count = {}
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
+    user_image_count.pop(user_id, None)
+
     keyboard = [
         [InlineKeyboardButton("English", callback_data=f"lang_en")]
     ]
@@ -30,6 +31,7 @@ async def set_language(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     user_id = query.from_user.id
     user_lang[user_id] = query.data.split("_")[1]
+    user_image_count.pop(user_id, None)
 
     await query.answer()
     await query.message.reply_text("Send your images (up to 20).")
@@ -63,19 +65,20 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
 
         path = generate_pdf(user_id)
-        await context.bot.send_document(
-            chat_id=user_id,
-            document=open(path, "rb"),
-            caption="Here is your PDF ✅"
-        )
+        with open(path, "rb") as pdf:
+            await context.bot.send_document(
+                chat_id=user_id,
+                document=pdf,
+                caption="Here is your PDF ✅"
+            )
         clear_user_cache(user_id)
-        user_image_count[user_id] = 0
+        user_image_count.pop(user_id, None)
 
     elif data == "set_name":
         await query.message.reply_text("Send me the name for the PDF file (not required yet). [Coming Soon]")
     elif data == "clear":
         clear_user_cache(user_id)
-        user_image_count[user_id] = 0
+        user_image_count.pop(user_id, None)
         await query.message.reply_text("🧹 All images cleared.")
     elif data == "dark":
         await query.message.reply_text("🌒 Dark mode feature coming soon!")
@@ -93,6 +96,9 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("✅ Watermark set!")
         context.user_data['expecting_watermark'] = False
 
+async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("❓ Unknown command. Please use /start to begin.")
+
 if __name__ == '__main__':
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
@@ -101,6 +107,7 @@ if __name__ == '__main__':
     app.add_handler(MessageHandler(is_image, handle_image))
     app.add_handler(CallbackQueryHandler(button_handler))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_handler))
+    app.add_handler(MessageHandler(filters.COMMAND, unknown))  # fallback
 
     print("Bot running...")
     app.run_polling()
