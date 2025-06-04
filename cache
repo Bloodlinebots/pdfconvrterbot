@@ -1,0 +1,7 @@
+cache/
+├── 123456789/                  ← user_id folder
+│   ├── img_1.jpg
+│   ├── img_2.jpg
+│   └── output.pdf
+├── 987654321/
+│   └── img_1.jpg
