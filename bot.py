@@ -1,15 +1,15 @@
-# bot.py
-
 import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import (ApplicationBuilder, CommandHandler, MessageHandler,
-                          CallbackQueryHandler, ContextTypes, filters)
+from telegram.ext import (
+    ApplicationBuilder, CommandHandler, MessageHandler,
+    CallbackQueryHandler, ContextTypes, filters
+)
 
 from config import BOT_TOKEN, FORCE_JOIN_CHANNEL
 from pdf_generator import generate_pdf
 from watermark import set_user_watermark, clear_user_watermark
-from helpers import clear_user_cache, send_feature_buttons, check_user_joined
-from filters import is_image
+from utils.helpers import clear_user_cache, send_feature_buttons, check_user_joined
+from utils.filters import is_image
 
 from pathlib import Path
 
@@ -63,8 +63,11 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
 
         path = generate_pdf(user_id)
-        await context.bot.send_document(chat_id=user_id, document=open(path, "rb"),
-                                        caption="Here is your PDF ✅")
+        await context.bot.send_document(
+            chat_id=user_id,
+            document=open(path, "rb"),
+            caption="Here is your PDF ✅"
+        )
         clear_user_cache(user_id)
         user_image_count[user_id] = 0
 
@@ -101,4 +104,3 @@ if __name__ == '__main__':
 
     print("Bot running...")
     app.run_polling()
-  
