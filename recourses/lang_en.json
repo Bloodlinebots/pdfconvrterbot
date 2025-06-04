@@ -1,0 +1,16 @@
+{
+  "welcome": "👋 Welcome! Please choose your language.",
+  "prompt_images": "📤 Send your images (up to 20)",
+  "features_info": "If you want to enable extra features, tap below. Otherwise, just tap 'Make PDF'.",
+  "btn_make_pdf": "📄 Make PDF",
+  "btn_set_name": "📝 Set Name",
+  "btn_clear": "🧹 Clear",
+  "btn_dark": "🌒 Dark Mode",
+  "btn_watermark": "💧 Your Watermark",
+  "btn_compress": "📦 Compress",
+  "must_join": "🚫 You must join our channel to use this bot.",
+  "subscribed_check": "✅ Subscribed",
+  "join_channel": "Join Channel",
+  "pdf_ready": "✅ Here is your PDF!",
+  "footer": "Made with @pdf_maker_rbot"
+}
