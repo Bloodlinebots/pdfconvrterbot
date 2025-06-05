@@ -1,9 +1,8 @@
 # filters.py
 
 from telegram import Message
-from telegram.ext import filters
 
-def is_image_filter(message: Message) -> bool:
+def is_image(message: Message) -> bool:
     if message.photo:
         return True
     if message.document and message.document.mime_type:
