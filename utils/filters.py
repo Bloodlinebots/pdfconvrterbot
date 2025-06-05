@@ -1,5 +1,3 @@
-# filters.py
-
 from telegram import Message
 
 def is_image(message: Message) -> bool:
