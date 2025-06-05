@@ -5,7 +5,7 @@ from telegram.ext import (
     ApplicationBuilder, CommandHandler, MessageHandler,
     CallbackQueryHandler, ContextTypes, filters
 )
-from telegram.ext._utils.types import FilterCallable  # for custom filter function
+#from telegram.ext._utils.types import FilterCallable  # for custom filter function
 
 from config import BOT_TOKEN, FORCE_JOIN_CHANNEL
 from pdf_generator import generate_pdf
