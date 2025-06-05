@@ -5,6 +5,7 @@ from telegram.ext import (
     ApplicationBuilder, CommandHandler, MessageHandler,
     CallbackQueryHandler, ContextTypes, filters
 )
+from telegram.ext._utils.types import FilterCallable  # for custom filter function
 
 from config import BOT_TOKEN, FORCE_JOIN_CHANNEL
 from pdf_generator import generate_pdf
@@ -100,7 +101,7 @@ if __name__ == '__main__':
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(set_language, pattern="^lang_"))
-    app.add_handler(MessageHandler(filters.ALL & filters.Create(is_image), handle_image))
+    app.add_handler(MessageHandler(FilterCallable(is_image), handle_image))
     app.add_handler(CallbackQueryHandler(button_handler))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_handler))
 
