@@ -1,13 +1,11 @@
 # filters.py
 
-from telegram.ext import MessageFilter
+from telegram import Message
+from telegram.ext import filters
 
-class IsImage(MessageFilter):
-    def filter(self, message) -> bool:
-        if message.photo:
-            return True
-        if message.document and message.document.mime_type:
-            return message.document.mime_type.startswith("image/")
-        return False
-
-is_image = IsImage()
+def is_image_filter(message: Message) -> bool:
+    if message.photo:
+        return True
+    if message.document and message.document.mime_type:
+        return message.document.mime_type.startswith("image/")
+    return False
